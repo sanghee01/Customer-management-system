@@ -22,34 +22,24 @@ const styles = {
   },
 };
 
-const customers = [
-  {
-    id: 1,
-    image: "https://placeimg.com/64/64/1",
-    name: "이상희",
-    birthday: "010816",
-    gender: "여자",
-    job: "대학생",
-  },
-  {
-    id: 2,
-    image: "https://placeimg.com/64/64/2",
-    name: "홍길동",
-    birthday: "040227",
-    gender: "남자",
-    job: "대학생",
-  },
-  {
-    id: 3,
-    image: "https://placeimg.com/64/64/3",
-    name: "이순신",
-    birthday: "990105",
-    gender: "여자",
-    job: "직장인",
-  },
-];
-
 class App extends Component {
+  state = {
+    customers: "",
+  };
+
+  componentDidMount() {
+    // 데이터 받아서(.then) state로 설정. res라는 이름으로 변수이름가 바뀜 그걸 customers 변수에 넣겠따.
+    this.callApi()
+      .then((res) => this.setState({ customers: res }))
+      .catch((err) => console.log(err)); // 오류 발생 경우 콘솔창에 해당 오류 출력
+  }
+
+  callApi = async () => {
+    const response = await fetch("api/customers"); // 내가 만든 api 경로에 접속해서
+    const body = await response.json(); // 받아온 데이터들을 json형태로 만들어 body변수에 저장
+    return body; // 고객 명단 데이터 전달
+  };
+
   render() {
     const { classes } = this.props; // 변수 만들어서 위에 정의한 styles가 적용될 수 있게
     return (
@@ -67,19 +57,21 @@ class App extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.map((c) => {
-                return (
-                  <Customer
-                    key={c.id}
-                    id={c.id}
-                    image={c.image}
-                    name={c.name}
-                    birthday={c.birthday}
-                    gender={c.gender}
-                    job={c.job}
-                  />
-                );
-              })}
+              {this.state.customers
+                ? this.state.customers.map((c) => {
+                    return (
+                      <Customer
+                        key={c.id}
+                        id={c.id}
+                        image={c.image}
+                        name={c.name}
+                        birthday={c.birthday}
+                        gender={c.gender}
+                        job={c.job}
+                      />
+                    );
+                  })
+                : ""}
             </TableBody>
           </Table>
         </TableContainer>
