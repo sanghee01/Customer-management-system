@@ -7,6 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
+import CircularProgress from "@mui/material/CircularProgress";
 import { withStyles } from "@mui/styles";
 
 const styles = {
@@ -20,14 +21,19 @@ const styles = {
     minWidth: 1080,
     // 무조건 1080px 이상 출력될 수 있게
   },
+  progress: {
+    margin: 30,
+  },
 };
 
 class App extends Component {
   state = {
     customers: "",
+    completed: 0,
   };
 
   componentDidMount() {
+    this.timer = setInterval(this.progress, 20);
     // 데이터 받아서(.then) state로 설정. res라는 이름으로 변수이름가 바뀜 그걸 customers 변수에 넣겠따.
     this.callApi()
       .then((res) => this.setState({ customers: res }))
@@ -38,6 +44,11 @@ class App extends Component {
     const response = await fetch("api/customers"); // 내가 만든 api 경로에 접속해서
     const body = await response.json(); // 받아온 데이터들을 json형태로 만들어 body변수에 저장
     return body; // 고객 명단 데이터 전달
+  };
+
+  progress = () => {
+    const { completed } = this.state;
+    this.setState({ completed: completed >= 100 ? 0 : completed + 1 });
   };
 
   render() {
@@ -57,21 +68,32 @@ class App extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.state.customers
-                ? this.state.customers.map((c) => {
-                    return (
-                      <Customer
-                        key={c.id}
-                        id={c.id}
-                        image={c.image}
-                        name={c.name}
-                        birthday={c.birthday}
-                        gender={c.gender}
-                        job={c.job}
-                      />
-                    );
-                  })
-                : ""}
+              {this.state.customers ? (
+                this.state.customers.map((c) => {
+                  return (
+                    <Customer
+                      key={c.id}
+                      id={c.id}
+                      image={c.image}
+                      name={c.name}
+                      birthday={c.birthday}
+                      gender={c.gender}
+                      job={c.job}
+                    />
+                  );
+                })
+              ) : (
+                <TableRow>
+                  <TableCell colSpan="6" align="center">
+                    {/* colSpan으로 6열 다 채우게 함 */}
+                    <CircularProgress
+                      className={classes.progress}
+                      variant="indeterminate"
+                      value={this.state.completed}
+                    />
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
