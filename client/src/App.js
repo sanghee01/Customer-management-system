@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Customer from "./components/Customer";
+import CustomerAdd from "./components/CustomerAdd";
 import Paper from "@mui/material/Paper";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
@@ -54,50 +55,53 @@ class App extends Component {
   render() {
     const { classes } = this.props; // 변수 만들어서 위에 정의한 styles가 적용될 수 있게
     return (
-      <Paper className={classes.root}>
-        <TableContainer>
-          <Table className={classes.table}>
-            <TableHead>
-              <TableRow>
-                <TableCell>번호</TableCell>
-                <TableCell>이미지</TableCell>
-                <TableCell>이름</TableCell>
-                <TableCell>생년월일</TableCell>
-                <TableCell>성별</TableCell>
-                <TableCell>직업</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {this.state.customers ? (
-                this.state.customers.map((c) => {
-                  return (
-                    <Customer
-                      key={c.id}
-                      id={c.id}
-                      image={c.image}
-                      name={c.name}
-                      birthday={c.birthday}
-                      gender={c.gender}
-                      job={c.job}
-                    />
-                  );
-                })
-              ) : (
+      <div>
+        <Paper className={classes.root}>
+          <TableContainer>
+            <Table className={classes.table}>
+              <TableHead>
                 <TableRow>
-                  <TableCell colSpan="6" align="center">
-                    {/* colSpan으로 6열 다 채우게 함 */}
-                    <CircularProgress
-                      className={classes.progress}
-                      variant="indeterminate"
-                      value={this.state.completed}
-                    />
-                  </TableCell>
+                  <TableCell>번호</TableCell>
+                  <TableCell>이미지</TableCell>
+                  <TableCell>이름</TableCell>
+                  <TableCell>생년월일</TableCell>
+                  <TableCell>성별</TableCell>
+                  <TableCell>직업</TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+              </TableHead>
+              <TableBody>
+                {this.state.customers ? (
+                  this.state.customers.map((c) => {
+                    return (
+                      <Customer
+                        key={c.id}
+                        id={c.id}
+                        image={c.image}
+                        name={c.name}
+                        birthday={c.birthday}
+                        gender={c.gender}
+                        job={c.job}
+                      />
+                    );
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan="6" align="center">
+                      {/* colSpan으로 6열 다 채우게 함 */}
+                      <CircularProgress
+                        className={classes.progress}
+                        variant="indeterminate"
+                        value={this.state.completed}
+                      />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+        <CustomerAdd />
+      </div>
     );
   }
 }
